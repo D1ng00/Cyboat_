@@ -1,0 +1,40 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read data from CSV file with semicolon delimiter
+file_path = '1350.csv'  # Replace with the path to your CSV file
+data = pd.read_csv(file_path, delimiter=';')
+
+# Convert the 'time' column to numerical values (assuming it represents milliseconds)
+#data['time'] = pd.to_numeric(data['time'])
+
+# Extract x and y data from the dataframe
+x_data = data['time'].values
+y_data = data['GPS.Spd'].values
+
+# Fit a polynomial of degree 3 to the data
+coefficients = np.polyfit(x_data, y_data, deg=6)
+
+# Generate the fitted curve using the coefficients
+fitted_curve = np.poly1d(coefficients)
+
+# Generate the x values for the fitted curve
+x_fit = np.linspace(min(x_data), max(x_data), 100)
+
+# Evaluate the fitted curve at the x values
+y_fit = fitted_curve(x_fit)
+
+# Plot the original data and the fitted curve
+plt.scatter(x_data, y_data, label='Original Data')
+plt.plot(x_fit, y_fit, label='Fitted Curve', color='red')
+plt.legend()
+#plt.xlabel('Time (milliseconds)')
+plt.xlabel('Time')
+#plt.ylabel('GPS Speed')
+plt.ylabel('Speed (m/s)')
+plt.title('Curve Fitting')
+plt.show()
+
+# Print the expression of the fitted curve
+print(f"Fitted Curve Expression: {coefficients[0]} * x^3 + {coefficients[1]} * x^2 + {coefficients[2]} * x + {coefficients[3]}")
